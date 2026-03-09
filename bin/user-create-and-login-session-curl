@@ -1,0 +1,64 @@
+#!/bin/bash 
+
+OMNET_USERNAME="username_`LC_ALL=C < /dev/urandom tr -dc 'A-Z' | head -c 1``LC_ALL=C < /dev/urandom tr -dc 'a-zA-Z0-9' | head -c 15`"
+
+OMNET_SURNAME="surname_`LC_ALL=C < /dev/urandom tr -dc 'A-Z' | head -c 1``LC_ALL=C < /dev/urandom tr -dc 'a-zA-Z0-9' | head -c 15`"
+
+OMNET_PWD="password_`LC_ALL=C < /dev/urandom tr -dc 'a-z_A-Z0-9' | head -c 30`"
+
+OMNET_COMMAND1="{ \
+  \"header\": { \
+  \"id\": \"25da8b8b-bb16-4e92-b22b-bf4f81d54b70\", \
+  \"message\": \"bar\", \
+  \"originator\": \"client\" \
+  }, \
+  \"body\": { \
+  \"username\": \"${OMNET_USERNAME}\", \
+  \"surname\": \"${OMNET_SURNAME}\", \
+  \"password\": \"${OMNET_PWD}\" \
+  } \
+}"
+  
+echo "${OMNET_COMMAND1}" | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2))"
+
+(curl -f -X POST "http://localhost:8081/api/user" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "${OMNET_COMMAND1}" 2>/dev/null) | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2))"
+  
+CODE=$?
+
+if [[ "$CODE" != "0" ]]
+then 
+  echo "FAILED create account - error code: $CODE"
+  exit $CODE
+fi
+
+OMNET_COMMAND2="{ \
+  \"header\": { \
+  \"id\": \"25da8b8b-bb16-4e92-b22b-bf4f81d54b71\", \
+  \"message\": \"bar\", \
+  \"originator\": \"client\" \
+  }, \
+  \"body\": { \
+  \"username\": \"${OMNET_USERNAME}\", \
+  \"surname\": \"${OMNET_SURNAME}\", \
+  \"password\": \"${OMNET_PWD}\" \
+  } \
+}"
+
+echo "${OMNET_COMMAND2}" | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2))"
+
+(curl -f -X POST "http://localhost:8081/api/user/session" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d "${OMNET_COMMAND2}" 2>/dev/null) | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2))"
+  
+CODE=$?
+
+if [[ "$CODE" != "0" ]]
+then 
+  echo "FAILED login session account - error code: $CODE"
+  exit $CODE
+fi
+

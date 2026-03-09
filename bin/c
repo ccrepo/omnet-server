@@ -1,0 +1,13 @@
+#!/bin/bash
+
+clear
+
+cd ..
+
+./gradlew clean
+
+./gradlew build
+
+#./gradlew build --refresh-dependencies
+
+./gradlew javadoc

@@ -1,0 +1,39 @@
+#!/bin/bash 
+
+if [[ "${#}" != "1" ]]
+then 
+  echo "mandatory argument token value missing"
+  exit 1
+fi
+
+if [[ "${1}" == "" ]]
+then
+  echo "invalid value for token '${1}'"
+  exit 1
+fi
+
+WC="`echo "${1}" | egrep "[a-zA-Z0-9=+/]" | wc -l | awk '{$1=$1; print}'`"
+
+if [[ "${WC}" != "1" ]]
+then
+  echo "invalid value for token '${1}'"
+  exit 1
+fi
+
+(curl -f -X GET "http://localhost:8081/api/user" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${1}" \
+) 
+
+#| python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2))"
+  
+CODE=$?
+
+if [[ "$CODE" != "0" ]]
+then 
+  echo "FAILED error code: $CODE"
+  exit $CODE
+fi
+
+echo OK

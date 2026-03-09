@@ -1,0 +1,36 @@
+.DS_Store
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/omnet-server/main/**/build/
+!**/omnet-server/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+!**/omnet-server/main/**/bin/
+!**/omnet-server/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/omnet-server/main/**/out/
+!**/omnet-server/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/

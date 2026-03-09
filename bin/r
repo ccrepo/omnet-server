@@ -1,0 +1,25 @@
+#!/bin/sh 
+
+export VERSION=21
+
+if [ -f "/usr/lib/jvm/java-${VERSION}-openjdk-arm64/bin/java" ]
+then
+  export JAVA_HOME="/usr/lib/jvm/java-${VERSION}-openjdk-arm64/"
+fi
+
+if [ -f "/usr/lib/jvm/java-${VERSION}-openjdk-amd64/bin/java" ]
+then
+  export JAVA_HOME="/usr/lib/jvm/java-${VERSION}-openjdk-amd64/"
+fi
+
+export PATH="$JAVA_HOME/bin":"$PATH"
+
+export JAVA_BIN="$JAVA_HOME/bin/java"
+
+cd ../build/libs
+
+( \
+ "$JAVA_BIN" -Dfile.encoding=UTF-8 -jar omnet-server-0.0.1.jar 
+ )
+
+#1>/dev/null 2>/dev/null

@@ -1,0 +1,111 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '4.0.3'
+  id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.omnet'
+version = '0.0.1'
+description = 'Omnet Server'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter:4.0.3'
+
+  implementation 'org.springframework.boot:spring-boot-starter-web:4.0.3'
+  
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:4.0.3'
+
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:4.0.3'
+
+  compileOnly 'org.projectlombok:lombok:1.18.30'
+  
+  annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+  //
+
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa:4.0.3'
+
+  implementation 'mysql:mysql-connector-java:8.0.28'
+
+  implementation 'org.hibernate.validator:hibernate-validator:8.0.2.Final'
+  
+  annotationProcessor 'org.hibernate.validator:hibernate-validator-annotation-processor:8.0.2.Final'
+
+  implementation 'org.springframework.boot:spring-boot-starter-security:4.0.3'
+  
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:4.0.3'
+
+  implementation 'com.okta.sdk:okta-sdk-api:14.0.0'
+
+  implementation 'com.okta.sdk:okta-sdk-impl:14.0.0' 
+
+  //implementation 'org.eclipse.angus:jakarta.mail:2.0.3' or API only (below)
+  implementation 'jakarta.mail:jakarta.mail-api:2.1.3'
+
+  //
+
+  testCompileOnly 'org.projectlombok:lombok:1.18.30'
+  
+  testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+      
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.3'
+  
+  testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.3'
+
+  testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test:4.0.3'
+  
+  testImplementation 'org.mockito:mockito-core:5.20.0'
+  
+  testImplementation 'org.springframework.security:spring-security-test:6.4.2'
+  
+  testAnnotationProcessor 'org.hibernate.validator:hibernate-validator-annotation-processor:8.0.2.Final'
+}
+
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
+
+tasks.named('bootJar') {
+  mainClass.set('com.omnet.OmnetApplicationServer')
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs = ['omnet-server/main/java']
+    }
+    resources {
+      srcDirs = ['omnet-server/main/resources']
+    }
+  }
+  test {
+    java {
+      srcDirs = ['omnet-server/test/java']
+    }
+    resources {
+      srcDirs = ['omnet-server/test/resources']
+    }
+  }
+}
+
+// NB. fix for auto load of mock maker attachment warning.
+test {
+  jvmArgs += ["-javaagent:${configurations.testRuntimeClasspath.find { it.name.contains("mockito-core") }}"]
+}
+
+tasks.javadoc() {
+  source = sourceSets["main"].allJava;
+  //options.memberLevel = JavadocMemberLevel.PRIVATE;
+}
+
